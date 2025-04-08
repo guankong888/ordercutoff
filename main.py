@@ -10,7 +10,7 @@ BASE_ID = os.environ["AIRTABLE_BASE_ID"]
 
 # === Email Config ===
 EMAIL_USER = os.environ["EMAIL_USER"]
-EMAIL_PASS = "zwzfdtvucxjnbkwp"
+SMTP_GMAIL_AUTH = = "zwzfdtvucxjnbkwp"
 EMAIL_TO = os.environ["EMAIL_TO"]
 
 # === Get This Week's Table Name (Sunday–Saturday) ===
@@ -49,7 +49,7 @@ def send_email(subject, body):
     msg['To'] = EMAIL_TO
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-        server.login(EMAIL_USER, EMAIL_PASS)
+        server.login(EMAIL_USER, SMTP_GMAIL_AUTH =)
         server.send_message(msg)
 
 # === Main Logic ===
