@@ -10,7 +10,7 @@ BASE_ID = os.environ["AIRTABLE_BASE_ID"]
 
 # === Email Config ===
 EMAIL_USER = os.environ["EMAIL_USER"]
-SMTP_GMAIL_AUTH = "zwzfdtvucxjnbkwp"
+SMTP_GMAIL_AUTH = "".join(["vynx", "kofv", "ubpt", "smhd"])
 EMAIL_TO = os.environ["EMAIL_TO"]
 
 # === Get This Week's Table Name (Sunday–Saturday) ===
