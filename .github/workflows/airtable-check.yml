@@ -2,10 +2,10 @@ name: Airtable Order Checker
 
 on:
   schedule:
-    # MF/FAIRE Checks (Tues & Thurs at 2:30 PM & 4:30 PM MT = 20:30 & 22:30 UTC)
+    # MF/FAIRE Checks – Tues/Thurs @ 2:30 PM & 4:30 PM MT → 20:30 & 22:30 UTC
     - cron: "30 20 * * 2,4"
     - cron: "30 22 * * 2,4"
-    # DNA Check (Tuesdays at 12:00 PM MT = 18:00 UTC)
+    # DNA Check – Tuesday @ 12:00 PM MT → 18:00 UTC
     - cron: "0 18 * * 2"
   workflow_dispatch:
 
@@ -29,4 +29,7 @@ jobs:
         env:
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: python main.py
