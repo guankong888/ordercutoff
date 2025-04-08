@@ -56,30 +56,32 @@ def send_email(subject, body):
 def run():
     now = datetime.now()
     current_hour = now.hour
-    current_minute = now.minute
     current_weekday = now.weekday()  # Monday = 0, Sunday = 6
+    force_run = os.environ.get("FORCE_RUN", "false").lower() == "true"
 
     table_name = get_week_table_name()
     print(f"Checking table: {table_name}")
     table = Table(AIRTABLE_TOKEN, BASE_ID, table_name)
 
-    if current_weekday == 1 and current_hour == 12:
-        # Tuesday @ 12:00 PM MT – DNA CA check
+    ran_anything = False
+
+    if force_run or (current_weekday == 1 and current_hour == 12):
         result = fetch_dna_unchecked_ca_only(table)
         subject = "DNA Check – CA Orders Unchecked"
         body = "\n".join(result) or "✅ All CA DNA Orders Checked!"
         send_email(subject, body)
         print(body)
+        ran_anything = True
 
-    elif current_weekday in [1, 3] and current_hour in [14, 16]:
-        # Tues/Thurs @ 2:30 PM or 4:30 PM MT – MF/FAIRE check (non-CA only)
+    if force_run or (current_weekday in [1, 3] and current_hour in [14, 16]):
         result = fetch_mf_faire_unchecked(table)
         subject = "MF/FAIRE Check – Unchecked Orders (Non-CA)"
         body = "\n".join(result) or "✅ All MF/FAIRE Orders Checked!"
         send_email(subject, body)
         print(body)
+        ran_anything = True
 
-    else:
+    if not ran_anything:
         print("Not a scheduled run time. Nothing to check.")
 
 if __name__ == "__main__":
