@@ -92,7 +92,7 @@ def run():
         ut_nv_az = {k: v for k, v in grouped.items() if k in ["UT", "NV", "AZ"]}
         if ut_nv_az:
             body = format_grouped_email(ut_nv_az)
-            send_email("MF/FAIRE Check – UT/NV/AZ Orders", body)
+            send_email("MF/FAIRE Unchecked – UT/NV/AZ Orders", body)
             print(body)
             ran_any = True
 
@@ -101,7 +101,7 @@ def run():
         fl_tx = {k: v for k, v in grouped.items() if k in ["FL", "TX"]}
         if fl_tx:
             body = format_grouped_email(fl_tx)
-            send_email("MF/FAIRE Check – FL/TX Orders", body)
+            send_email("MF/FAIRE Unchecked – FL/TX Orders", body)
             print(body)
             ran_any = True
 
