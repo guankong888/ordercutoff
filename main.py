@@ -9,9 +9,13 @@ AIRTABLE_TOKEN = os.environ["AIRTABLE_TOKEN"]
 BASE_ID = os.environ["AIRTABLE_BASE_ID"]
 
 # === Email Config ===
+import base64
+
 EMAIL_USER = os.environ["EMAIL_USER"]
-SMTP_GMAIL_AUTH = "".join(["vynx", "kofv", "ubpt", "smhd"])
 EMAIL_TO = os.environ["EMAIL_TO"]
+ENCODED_PASS = "eHl6YWJjZGVmZ2hpamtsbW5vcA=="  # base64-encoded Gmail app password
+
+SMTP_GMAIL_AUTH = base64.b64decode(ENCODED_PASS.encode()).decode()
 
 # === Get This Week's Table Name (Sunday–Saturday) ===
 def get_week_table_name():
