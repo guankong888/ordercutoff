@@ -71,7 +71,7 @@ def send_email(subject, body):
 def run():
     now = datetime.now()
     hour = now.hour
-    weekday = now.weekday()  # Monday = 0, Sunday = 6
+    weekday = now.weekday()  # Monday=0, Sunday=6
     force_run = os.environ.get("FORCE_RUN", "false").lower() == "true"
 
     table_name = get_week_table_name()
@@ -80,34 +80,33 @@ def run():
 
     ran_any = False
 
-    # === CA DNA Orders – Tuesday at 12:00 PM ===
     if force_run or (weekday == 1 and hour == 12):
-        result = fetch_dna_unchecked_ca_only(table)
-        if result:
-            body = "\n".join(result)
-            send_email("DNA Check – CA Orders Unchecked", body)
-            print(body)
-            ran_any = True
+        grouped = fetch_dna_unchecked_ca_only(table)
+        body = format_grouped_email(grouped)
+        send_email("DNA Check – CA Orders Unchecked", body)
+        print(body)
+        ran_any = True
 
-    # === UT/NV/AZ MF/FAIRE Orders – Tuesday at 2:30 PM & 4:30 PM ===
     if force_run or (weekday == 1 and hour in [14, 16]):
-        grouped_all = fetch_mf_faire_unchecked(table)
-        filtered = {state: codes for state, codes in grouped_all.items() if state in ["UT", "NV", "AZ"]}
-        if filtered:
-            body = format_grouped_email(filtered)
+        grouped = fetch_mf_faire_unchecked(table)
+        ut_nv_az = {k: v for k, v in grouped.items() if k in ["UT", "NV", "AZ"]}
+        if ut_nv_az:
+            body = format_grouped_email(ut_nv_az)
             send_email("MF/FAIRE Check – UT/NV/AZ Orders", body)
             print(body)
             ran_any = True
 
-    # === FL/TX MF/FAIRE Orders – Thursday at 2:30 PM & 4:30 PM ===
     if force_run or (weekday == 3 and hour in [14, 16]):
-        grouped_all = fetch_mf_faire_unchecked(table)
-        filtered = {state: codes for state, codes in grouped_all.items() if state in ["FL", "TX"]}
-        if filtered:
-            body = format_grouped_email(filtered)
+        grouped = fetch_mf_faire_unchecked(table)
+        fl_tx = {k: v for k, v in grouped.items() if k in ["FL", "TX"]}
+        if fl_tx:
+            body = format_grouped_email(fl_tx)
             send_email("MF/FAIRE Check – FL/TX Orders", body)
             print(body)
             ran_any = True
 
     if not ran_any:
         print("Not a scheduled run time. Nothing to check.")
+
+if __name__ == "__main__":
+    run()
