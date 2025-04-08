@@ -1,10 +1,17 @@
 from pyairtable import Table
 from datetime import datetime, timedelta
 import os
+import smtplib
+from email.mime.text import MIMEText
 
 # === Airtable Config ===
 AIRTABLE_TOKEN = os.environ["AIRTABLE_TOKEN"]
 BASE_ID = os.environ["AIRTABLE_BASE_ID"]
+
+# === Email Config ===
+EMAIL_USER = os.environ["EMAIL_USER"]
+EMAIL_PASS = os.environ["EMAIL_PASS"]
+EMAIL_TO = os.environ["EMAIL_TO"]
 
 # === Get This Week's Table Name (Sunday–Saturday) ===
 def get_week_table_name():
@@ -34,10 +41,22 @@ def fetch_dna_unchecked_ca_only(table: Table):
             unchecked.append(new_code)
     return unchecked
 
+# === Email Sending ===
+def send_email(subject, body):
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_USER
+    msg['To'] = EMAIL_TO
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        server.login(EMAIL_USER, EMAIL_PASS)
+        server.send_message(msg)
+
 # === Main Logic ===
 def run():
     now = datetime.now()
     current_hour = now.hour
+    current_minute = now.minute
     current_weekday = now.weekday()  # Monday = 0, Sunday = 6
 
     table_name = get_week_table_name()
@@ -45,15 +64,21 @@ def run():
     table = Table(AIRTABLE_TOKEN, BASE_ID, table_name)
 
     if current_weekday == 1 and current_hour == 12:
-        # Tuesday @ noon: DNA check
+        # Tuesday @ 12:00 PM MT – DNA CA check
         result = fetch_dna_unchecked_ca_only(table)
-        print("🔍 Unchecked DNA Orders (CA only):")
-        print("\n".join(result) or "None")
+        subject = "DNA Check – CA Orders Unchecked"
+        body = "\n".join(result) or "✅ All CA DNA Orders Checked!"
+        send_email(subject, body)
+        print(body)
+
     elif current_weekday in [1, 3] and current_hour in [14, 16]:
-        # Tuesday or Thursday @ 2:30pm or 4:30pm: MF/FAIRE check
+        # Tues/Thurs @ 2:30 PM or 4:30 PM MT – MF/FAIRE check (non-CA only)
         result = fetch_mf_faire_unchecked(table)
-        print("🔍 Unchecked MF/FAIRE Orders (excluding CA):")
-        print("\n".join(result) or "None")
+        subject = "MF/FAIRE Check – Unchecked Orders (Non-CA)"
+        body = "\n".join(result) or "✅ All MF/FAIRE Orders Checked!"
+        send_email(subject, body)
+        print(body)
+
     else:
         print("Not a scheduled run time. Nothing to check.")
 
