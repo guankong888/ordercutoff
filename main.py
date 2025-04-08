@@ -49,7 +49,7 @@ def send_email(subject, body):
     msg['To'] = EMAIL_TO
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-        server.login(EMAIL_USER, SMTP_GMAIL_AUTH =)
+        server.login(EMAIL_USER, SMTP_GMAIL_AUTH)
         server.send_message(msg)
 
 # === Main Logic ===
