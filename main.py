@@ -12,7 +12,7 @@ BASE_ID = "appJrWoXe5H2YZnmU"
 
 # === Email Config ===
 EMAIL_USER = "stefbot50@gmail.com"
-EMAIL_TO = "stefan@n2gsupps.com"
+EMAIL_TO = "stefbot50@gmail.com"
 ENCODED_PASS = "cmRwcyBuYXJpIHlobHcgendkbA=="  # base64 for: rdps nari yhlw zwdl
 SMTP_GMAIL_AUTH = base64.b64decode(ENCODED_PASS.encode()).decode()
 
