@@ -5,6 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 import base64
 from collections import defaultdict
+from zoneinfo import ZoneInfo  # For timezone support (Python 3.9+)
 
 # === Airtable Config ===
 AIRTABLE_TOKEN = "pata6JYRNuyGAi6J2.5d0e7306128fd75264b0c6e78720b7f1372c2ccd315ab591cbf2aeb7816b6262"
@@ -13,12 +14,12 @@ BASE_ID = "appJrWoXe5H2YZnmU"
 # === Email Config ===
 EMAIL_USER = "stefbot50@gmail.com"
 EMAIL_TO = "customerservice@n2gsupps.com"
-ENCODED_PASS = "cmRwcyBuYXJpIHlobHcgendkbA=="  # base64 for: rdps nari yhlw zwdl
+ENCODED_PASS = "cmRwcyBuYXJpIHlobHcgendkbA=="
 SMTP_GMAIL_AUTH = base64.b64decode(ENCODED_PASS.encode()).decode()
 
 # === Get This Week's Table Name ===
 def get_week_table_name():
-    today = datetime.today()
+    today = datetime.now(ZoneInfo("America/Denver"))
     start = today - timedelta(days=today.weekday() + 1) if today.weekday() != 6 else today
     end = start + timedelta(days=6)
     return f"{start.strftime('%m/%d')}-{end.strftime('%m/%d/%Y')}"
@@ -54,7 +55,7 @@ def format_grouped_email(grouped_data):
     for state in sorted(grouped_data.keys()):
         lines.append(f"{state}:")
         lines.extend([f"- {code}" for code in grouped_data[state]])
-        lines.append("")  # Empty line between groups
+        lines.append("")
     return "\n".join(lines)
 
 # === Email Sending ===
@@ -69,10 +70,13 @@ def send_email(subject, body):
 
 # === Main Logic ===
 def run():
-    now = datetime.now()
+    # Get current time in Mountain Time
+    now = datetime.now(ZoneInfo("America/Denver"))
     hour = now.hour
-    weekday = now.weekday()  # Monday=0, Sunday=6
+    weekday = now.weekday()
     force_run = os.environ.get("FORCE_RUN", "false").lower() == "true"
+
+    print(f"MT Time: {now.isoformat()}")
 
     table_name = get_week_table_name()
     print(f"Checking table: {table_name}")
@@ -80,6 +84,7 @@ def run():
 
     ran_any = False
 
+    # DNA Check – Tuesday @ 12:00 PM MT
     if force_run or (weekday == 1 and hour == 12):
         grouped = fetch_dna_unchecked_ca_only(table)
         body = format_grouped_email(grouped)
@@ -87,6 +92,7 @@ def run():
         print(body)
         ran_any = True
 
+    # MF/FAIRE Check – Tuesday & Thursday @ 2:00 PM and 4:00 PM MT
     if force_run or (weekday == 1 and hour in [14, 16]):
         grouped = fetch_mf_faire_unchecked(table)
         ut_nv_az = {k: v for k, v in grouped.items() if k in ["UT", "NV", "AZ"]}
