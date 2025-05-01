@@ -14,8 +14,7 @@ BASE_ID = "appJrWoXe5H2YZnmU"
 # === Email Config ===
 EMAIL_USER = "stefbot50@gmail.com"
 EMAIL_TO = "customerservice@n2gsupps.com"
-ENCODED_PASS = "cmRwcyBuYXJpIHlobHcgendkbA=="
-SMTP_GMAIL_AUTH = base64.b64decode(ENCODED_PASS.encode()).decode()
+SMTP_GMAIL_AUTH = "mrnb qmhx xeox dejx"  # paste your real 16-char app password here, no base64
 
 # === Get This Week's Table Name ===
 def get_week_table_name():
