@@ -12,9 +12,9 @@ AIRTABLE_TOKEN = "pata6JYRNuyGAi6J2.5d0e7306128fd75264b0c6e78720b7f1372c2ccd315a
 BASE_ID = "appJrWoXe5H2YZnmU"
 
 # === Email Config ===
-EMAIL_USER = "stefbot50@gmail.com"
+EMAIL_USER = "n2gbot@gmail.com"
 EMAIL_TO = "customerservice@n2gsupps.com"
-SMTP_GMAIL_AUTH = "mrnb qmhx xeox dejx"  # paste your real 16-char app password here, no base64
+SMTP_GMAIL_AUTH = "czet jzzb wfna gxqp"  # paste your real 16-char app password here, no base64
 
 # === Get This Week's Table Name ===
 def get_week_table_name():
