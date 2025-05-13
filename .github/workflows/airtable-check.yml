@@ -3,8 +3,8 @@ name: Airtable Order Checker
 on:
   schedule:
     # MF/FAIRE Checks – Tues/Thurs @ 2:30 PM & 4:30 PM MT → 20:30 & 22:30 UTC
-    - cron: "30 20 * * 2,4"
-    - cron: "30 22 * * 2,4"
+    - cron: "30 21 * * 2,4"
+    - cron: "30 23 * * 2,4"
     # DNA Check – Tuesday @ 12:00 PM MT → 18:00 UTC
     - cron: "0 18 * * 2"
   workflow_dispatch:
