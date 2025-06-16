@@ -1,4 +1,3 @@
-# maintcommit
 from pyairtable import Table
 from datetime import datetime, timedelta
 import os
